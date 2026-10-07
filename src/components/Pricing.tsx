@@ -6,16 +6,9 @@ import { Icon, LuxButton, Reveal, SectionHead, ease } from "@/components/ui";
 import { cn } from "@/utils/cn";
 
 /* ------------------------------------------------------------------ pricing */
-function discounted(price: string) {
-  const n = parseInt(price.replace(/\s/g, ""), 10);
-  if (!n) return price;
-  const d = Math.round((n * 0.8) / 1000) * 1000;
-  return d.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
-}
 
 export function Pricing({ onBook }: { onBook: () => void }) {
   const { t } = useI18n();
-  const [promo, setPromo] = useState(false);
 
   return (
     <section
@@ -28,31 +21,6 @@ export function Pricing({ onBook }: { onBook: () => void }) {
       <div className="relative mx-auto max-w-7xl px-5 lg:px-8">
         <SectionHead kicker={t.pricing.kicker} title={t.pricing.title} sub={t.pricing.sub} />
 
-        {/* promo switch */}
-        <Reveal delay={0.1}>
-          <div className="mx-auto mt-8 flex w-full flex-col items-center gap-3 rounded-[1.5rem] border border-ink/10 bg-white p-4 text-center shadow-[0_18px_45px_-34px_rgba(8,25,48,0.5)] sm:mt-10 sm:w-fit sm:flex-row sm:gap-4 sm:rounded-full sm:p-2 sm:pl-5 sm:text-left">
-            <span className="text-[12.5px] font-semibold leading-snug text-ink/70 sm:text-[13px]">{t.pricing.promoHint}</span>
-            <button
-              onClick={() => setPromo((v) => !v)}
-              className={cn(
-                "relative flex h-9 w-[68px] items-center rounded-full border transition-colors",
-                promo ? "border-mint-2/40 bg-mint/25" : "border-ink/12 bg-ink/8"
-              )}
-              aria-pressed={promo}
-            >
-              <motion.span
-                layout
-                transition={{ type: "spring", stiffness: 500, damping: 32 }}
-                className={cn(
-                  "absolute flex h-7 w-7 items-center justify-center rounded-full text-[10px] font-bold",
-                  promo ? "left-[38px] bg-gradient-to-br from-mint to-azure text-ink" : "left-1 bg-ink text-white/70"
-                )}
-              >
-                {promo ? "−20%" : "0%"}
-              </motion.span>
-            </button>
-          </div>
-        </Reveal>
 
         <div className="mt-9 grid gap-5 sm:mt-12 sm:grid-cols-2 sm:gap-6 lg:grid-cols-4">
           {t.pricing.plans.map((p, i) => {
@@ -87,14 +55,14 @@ export function Pricing({ onBook }: { onBook: () => void }) {
                   <div className="mt-5 flex items-end gap-2">
                     <AnimatePresence mode="popLayout">
                       <motion.span
-                        key={promo ? "p" : "n"}
+                        key="fixed"
                         initial={{ opacity: 0, y: 12 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -12 }}
                         transition={{ duration: 0.35, ease }}
                         className={cn("font-display text-[2rem] leading-none sm:text-[2.4rem]", featured ? "text-white" : "text-ink")}
                       >
-                        {promo ? discounted(p.price) : p.price}
+                        {p.price}
                       </motion.span>
                     </AnimatePresence>
                     <span className={cn("pb-1 text-[13px] font-semibold", featured ? "text-white/55" : "text-ink/50")}>{p.unit}</span>
