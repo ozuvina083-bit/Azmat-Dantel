@@ -1,0 +1,311 @@
+@import "tailwindcss";
+
+@theme {
+  --color-ink: #050b16;
+  --color-ink-2: #0a1223;
+  --color-ink-3: #122038;
+  --color-paper: #f7f9f8;
+  --color-mint: #14e0c0;
+  --color-mint-2: #0fb59c;
+  --color-mints: #8ff5e4;
+  --color-azure: #3f8cff;
+  --color-gold: #e9c68b;
+  --color-gold-2: #b98d4d;
+
+  --font-sans: "Manrope", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Playfair Display", "Times New Roman", serif;
+
+  --shadow-lux: 0 30px 80px -30px rgba(4, 12, 26, 0.55);
+  --shadow-glow: 0 0 60px -12px rgba(20, 224, 192, 0.55);
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-tap-highlight-color: transparent;
+  }
+  body {
+    background: var(--color-ink);
+    color: #e9eef5;
+    font-family: var(--font-sans);
+    overflow-x: hidden;
+  }
+  section[id],
+  div[id]:not(#root) {
+    scroll-margin-top: 84px;
+  }
+  input,
+  textarea,
+  select {
+    font-size: 16px; /* prevents iOS auto-zoom on focus */
+  }
+  @media (min-width: 768px) {
+    input,
+    textarea,
+    select {
+      font-size: inherit;
+    }
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .safe-bottom {
+    padding-bottom: max(0.7rem, env(safe-area-inset-bottom));
+  }
+  ::selection {
+    background: var(--color-mint);
+    color: #04121a;
+  }
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #070d1a;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #14e0c0, #3f8cff);
+    border-radius: 999px;
+    border: 2px solid #070d1a;
+  }
+}
+
+/* ---------- surfaces ---------- */
+.glass {
+  background: linear-gradient(140deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.03));
+  backdrop-filter: blur(18px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+.glass-light {
+  background: linear-gradient(150deg, rgba(255, 255, 255, 0.92), rgba(255, 255, 255, 0.68));
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(12, 34, 60, 0.08);
+}
+.sheen {
+  position: relative;
+  overflow: hidden;
+}
+.sheen::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -120%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.45), transparent);
+  transform: skewX(-18deg);
+  transition: left 0.75s cubic-bezier(0.3, 0.9, 0.2, 1);
+}
+.sheen:hover::after {
+  left: 140%;
+}
+.hair {
+  border: 1px solid transparent;
+  background-image: linear-gradient(#0b1424, #0b1424),
+    linear-gradient(140deg, rgba(233, 198, 139, 0.6), rgba(20, 224, 192, 0.25), rgba(63, 140, 255, 0.5));
+  background-origin: border-box;
+  background-clip: padding-box, border-box;
+}
+.grad-text {
+  background: linear-gradient(100deg, #8ff5e4 0%, #14e0c0 38%, #e9c68b 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.grad-text-blue {
+  background: linear-gradient(100deg, #3f8cff, #14e0c0);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.dotgrid {
+  background-image: radial-gradient(rgba(255, 255, 255, 0.09) 1px, transparent 1px);
+  background-size: 26px 26px;
+}
+.dotgrid-dark {
+  background-image: radial-gradient(rgba(9, 24, 44, 0.09) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+.noise {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.35'/%3E%3C/svg%3E");
+}
+
+/* ---------- animations ---------- */
+@keyframes aurora {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  33% {
+    transform: translate3d(6%, -4%, 0) scale(1.12);
+  }
+  66% {
+    transform: translate3d(-5%, 5%, 0) scale(0.95);
+  }
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+.aurora {
+  animation: aurora 18s ease-in-out infinite;
+}
+@keyframes floaty {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-14px);
+  }
+}
+.floaty {
+  animation: floaty 6s ease-in-out infinite;
+}
+.floaty-slow {
+  animation: floaty 9s ease-in-out infinite;
+}
+@keyframes spin-slow {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.spin-slow {
+  animation: spin-slow 26s linear infinite;
+}
+@keyframes pulse-ring {
+  0% {
+    transform: scale(0.85);
+    opacity: 0.75;
+  }
+  70% {
+    transform: scale(1.6);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1.6);
+    opacity: 0;
+  }
+}
+.pulse-ring {
+  animation: pulse-ring 2.4s cubic-bezier(0.3, 0.8, 0.3, 1) infinite;
+}
+@keyframes ticker {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+.ticker {
+  animation: ticker 32s linear infinite;
+}
+.ticker:hover {
+  animation-play-state: paused;
+}
+@keyframes sheen-loop {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+.sheen-loop {
+  background: linear-gradient(90deg, #0d1a2e, #1d3557, #0d1a2e);
+  background-size: 200% 100%;
+  animation: sheen-loop 2.4s linear infinite;
+}
+@keyframes scanline {
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(560%);
+  }
+}
+.scanline {
+  animation: scanline 3.4s ease-in-out infinite;
+}
+@keyframes confetti-fall {
+  0% {
+    opacity: 0;
+    transform: translateY(-10px) rotate(0deg);
+  }
+  25% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(120px) rotate(320deg);
+  }
+}
+.confetti span {
+  animation: confetti-fall 1.9s ease-out forwards;
+}
+@media (prefers-reduced-motion: reduce) {
+  .aurora,
+  .floaty,
+  .floaty-slow,
+  .spin-slow,
+  .pulse-ring,
+  .ticker,
+  .scanline {
+    animation: none !important;
+  }
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/* ------------------------------------------------------------------
+   Mobile performance: phones get no animated blurs, no expensive
+   backdrop filters and much lighter decorative gradients.
+   ------------------------------------------------------------------ */
+@media (max-width: 767px) {
+  html,
+  body {
+    overflow-x: hidden; /* fallback */
+    overflow-x: clip;
+    overscroll-behavior-x: none;
+    max-width: 100%;
+  }
+  .aurora {
+    animation: none !important;
+    filter: blur(38px) !important;
+    opacity: 0.5;
+  }
+  .glass,
+  .glass-light {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+  .scanline,
+  .spin-slow {
+    display: none;
+  }
+  .sheen::after {
+    display: none;
+  }
+  .noise {
+    display: none;
+  }
+  /* Lightweight marquees on phones */
+  .ticker {
+    animation-duration: 46s;
+  }
+  .sheen-loop {
+    animation: none;
+    background: #12203a;
+  }
+}
+
+@media (min-width: 768px) {
+  html,
+  body {
+    overflow-x: hidden; /* fallback */
+    overflow-x: clip;
+  }
+}
