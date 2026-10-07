@@ -4,10 +4,12 @@ import { useI18n } from "@/i18n";
 import { BRAND, MEDIA } from "@/media";
 import { Icon, Reveal, SectionHead, Stars, ease } from "@/components/ui";
 import { cn } from "@/utils/cn";
+import { useHomeContent } from "@/lib/home-content";
 
 /* ------------------------------------------------------------------ doctors */
 export function Doctors({ onBook }: { onBook: () => void }) {
   const { t } = useI18n();
+  const { doctors } = useHomeContent();
   return (
     <section id="doctors" className="relative overflow-hidden py-16 sm:py-20 lg:py-28">
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(45%_35%_at_15%_10%,rgba(63,140,255,0.14),transparent_60%)]" />
@@ -15,7 +17,7 @@ export function Doctors({ onBook }: { onBook: () => void }) {
         <SectionHead kicker={t.doctors.kicker} title={t.doctors.title} sub={t.doctors.sub} dark />
 
         <div className="mt-10 grid gap-5 sm:mt-14 md:grid-cols-3 md:gap-6">
-          {t.doctors.items.map((d, i) => (
+          {doctors.map((d, i) => (
             <Reveal key={d.name} delay={i * 0.1}>
               <motion.article
                 whileHover={{ y: -8 }}
@@ -24,7 +26,7 @@ export function Doctors({ onBook }: { onBook: () => void }) {
               >
                 <div className="relative h-[300px] overflow-hidden sm:h-[340px]">
                   <img
-                    src={MEDIA.doctors[i % MEDIA.doctors.length]}
+                    src={d.image || MEDIA.doctors[i % MEDIA.doctors.length]}
                     alt={d.name}
                     loading="lazy"
                     className="h-full w-full object-cover transition-transform duration-[900ms] group-hover:scale-[1.07]"

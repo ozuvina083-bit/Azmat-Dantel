@@ -241,7 +241,7 @@ const uz = {
     consentData: "Ma'lumotlar faqat navbatni tasdiqlash uchun ishlatiladi",
     sending: "Yuborilmoqda...",
     refLabel: "Navbat raqami",
-    telegramCta: "Telegramga yuborish",
+    telegramCta: "Telegram botga ulanish",
     noSlots: "Bu kunda bo'sh vaqt qolmagan, boshqa kunni tanlang",
   },
   contact: {
@@ -477,7 +477,7 @@ const ru: Dict = {
     consentData: "Данные используются только для подтверждения записи",
     sending: "Отправляем...",
     refLabel: "Номер записи",
-    telegramCta: "Отправить в Telegram",
+    telegramCta: "Подключить Telegram-бота",
     noSlots: "На этот день свободного времени нет, выберите другой день",
   },
   contact: {
@@ -712,7 +712,7 @@ const en: Dict = {
     consentData: "Your data is used only to confirm the appointment",
     sending: "Sending...",
     refLabel: "Booking reference",
-    telegramCta: "Send via Telegram",
+    telegramCta: "Connect Telegram bot",
     noSlots: "No free slots left on this day, please pick another",
   },
   contact: {

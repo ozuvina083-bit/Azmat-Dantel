@@ -4,6 +4,8 @@ import { useI18n, type Lang } from "@/i18n";
 import { MEDIA } from "@/media";
 import { Icon, LuxButton, SectionHead, ease } from "@/components/ui";
 import { cn } from "@/utils/cn";
+import { useHomeContent } from "@/lib/home-content";
+import { supabase } from "@/lib/supabase";
 
 const WEEKDAYS: Record<Lang, string[]> = {
   uz: ["Yak", "Dush", "Sesh", "Chor", "Pay", "Jum", "Shan"],
@@ -47,10 +49,12 @@ type BookingRecord = {
   comment: string;
   lang: Lang;
   createdAt: string;
+  telegramLink?: string;
 };
 
 export function Booking() {
   const { t, lang } = useI18n();
+  const { services, doctors } = useHomeContent();
   const [step, setStep] = useState(0);
   const [service, setService] = useState<number | null>(null);
   const [doctorId, setDoctorId] = useState<number>(-1); // -1 = any doctor
@@ -63,6 +67,7 @@ export function Booking() {
   const [error, setError] = useState("");
   const [sending, setSending] = useState(false);
   const [record, setRecord] = useState<BookingRecord | null>(null);
+  const [bookedSlots, setBookedSlots] = useState<Record<string, Set<string>>>({});
   const cardRef = useRef<HTMLDivElement>(null);
   const firstRender = useRef(true);
 
@@ -71,20 +76,38 @@ export function Booking() {
     const now = new Date();
     for (let i = 0; i < 10; i++) {
       const day = new Date(now.getFullYear(), now.getMonth(), now.getDate() + i + 1);
-      const key = `${day.getDate()}-${day.getMonth()}-${day.getFullYear()}`;
+      const key = `${day.getFullYear()}-${String(day.getMonth() + 1).padStart(2, "0")}-${String(day.getDate()).padStart(2, "0")}`;
       out.push({
         d: day.getDate(),
         m: day.getMonth() + 1,
         wd: WEEKDAYS[lang][day.getDay()],
         key,
-        busy: busyForDay(key),
+        busy: supabase ? new Set<number>() : busyForDay(key),
       });
     }
     return out;
   }, [lang]);
 
   const selectedDate = dateIdx === null ? null : dates[dateIdx];
-  const doctorName = doctorId === -1 ? t.booking.anyDoctor : t.doctors.items[doctorId].name;
+  if (selectedDate && bookedSlots[selectedDate.key]) {
+    selectedDate.busy = new Set(SLOTS.map((slot, index) => bookedSlots[selectedDate.key].has(slot) ? index : -1).filter((index) => index >= 0));
+  }
+  const doctorName = doctorId === -1 ? t.booking.anyDoctor : doctors[doctorId]?.name ?? t.booking.anyDoctor;
+
+  useEffect(() => {
+    if (!supabase || !selectedDate) return;
+    let live = true;
+    supabase.rpc("get_booked_slots", { p_date: selectedDate.key }).then(({ data, error }) => {
+      if (!live) return;
+      if (error) {
+        setError("Vaqtlarni tekshirib bo‘lmadi. Iltimos, qayta urinib ko‘ring.");
+        return;
+      }
+      const slots = new Set<string>((data ?? []).map((row: { slot_time: string }) => row.slot_time.slice(0, 5)));
+      setBookedSlots((current) => ({ ...current, [selectedDate.key]: slots }));
+    });
+    return () => { live = false; };
+  }, [selectedDate?.key]);
 
   // Moving between steps should bring the form back into view (mobile especially).
   useEffect(() => {
@@ -115,7 +138,7 @@ export function Booking() {
     setSending(true);
     const payload: BookingRecord = {
       ref: `EWD-${new Date().getFullYear()}-${Math.floor(1000 + Math.random() * 8999)}`,
-      service: service === null ? "—" : t.services.items[service].name,
+      service: service === null ? "—" : services[service].name,
       doctor: doctorName,
       date: selectedDate ? `${selectedDate.d}.${String(selectedDate.m).padStart(2, "0")}` : "—",
       time: time ?? "—",
@@ -125,17 +148,36 @@ export function Booking() {
       lang,
       createdAt: new Date().toISOString(),
     };
+    const telegramToken = crypto.randomUUID();
+    const botUsername = import.meta.env.VITE_TELEGRAM_BOT_USERNAME?.replace(/^@/, "");
+    if (botUsername) payload.telegramLink = `https://t.me/${botUsername}?start=${telegramToken}`;
 
     try {
       // Demo "backend": the record is persisted locally.
       // In production replace this block with a POST to your booking API / CRM.
-      const endpoint = (window as unknown as { EWD_API?: string }).EWD_API;
-      if (endpoint) {
-        await fetch(endpoint, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload),
+      if (supabase) {
+        const { error: bookingError } = await supabase.from("appointments").insert({
+          reference: payload.ref,
+          service: payload.service,
+          doctor: payload.doctor,
+          appointment_date: selectedDate?.key,
+          appointment_time: time,
+          patient_name: payload.name,
+          phone: payload.phone,
+          comment: payload.comment,
+          language: payload.lang,
+          status: "pending",
+          telegram_link_token: telegramToken,
         });
+        if (bookingError) {
+          setSending(false);
+          if (bookingError.code === "23505") {
+            setBookedSlots((current) => ({ ...current, [selectedDate!.key]: new Set([...(current[selectedDate!.key] ?? []), time!] ) }));
+            setTime(null);
+            return setError(t.booking.noSlots);
+          }
+          return setError("Yozuvni yuborib bo‘lmadi. Iltimos, birozdan keyin qayta urinib ko‘ring.");
+        }
       } else {
         const store = JSON.parse(localStorage.getItem("ewd-bookings") || "[]");
         store.push(payload);
@@ -143,7 +185,8 @@ export function Booking() {
         await new Promise((r) => setTimeout(r, 850));
       }
     } catch {
-      /* demo mode: never block the user */
+      setSending(false);
+      return setError("Yozuvni yuborib bo‘lmadi. Iltimos, birozdan keyin qayta urinib ko‘ring.");
     }
 
     setSending(false);
@@ -164,7 +207,7 @@ export function Booking() {
   };
 
   const summary = [
-    { l: t.booking.summaryLabels.service, v: service === null ? "—" : t.services.items[service].name },
+    { l: t.booking.summaryLabels.service, v: service === null ? "—" : services[service].name },
     { l: t.booking.summaryLabels.doctor, v: doctorName },
     {
       l: t.booking.summaryLabels.time,
@@ -264,9 +307,11 @@ export function Booking() {
                       </div>
 
                       <div className="mt-6 flex w-full max-w-md flex-col justify-center gap-2.5 sm:mt-7 sm:flex-row sm:gap-3">
-                        <LuxButton href={MEDIA.telegram} className="w-full px-5 py-3.5 text-[13px] sm:w-auto">
-                          {t.booking.telegramCta}
-                        </LuxButton>
+                        {record.telegramLink && (
+                          <LuxButton href={record.telegramLink} className="w-full px-5 py-3.5 text-[13px] sm:w-auto">
+                            {t.booking.telegramCta}
+                          </LuxButton>
+                        )}
                         <LuxButton variant="ghost" className="w-full px-5 py-3.5 text-[13px] sm:w-auto" onClick={reset}>
                           {t.booking.again}
                         </LuxButton>
@@ -352,7 +397,7 @@ export function Booking() {
                                 </p>
                                 {/* phones: scrollable list so the tall form never gets cut off */}
                                 <div className="no-scrollbar mt-3.5 grid max-h-[42vh] gap-2 overflow-y-auto overscroll-contain pr-1 sm:max-h-none sm:grid-cols-2 sm:gap-2.5 sm:overflow-visible sm:pr-0">
-                                  {t.services.items.map((s, i) => (
+                                  {services.map((s, i) => (
                                     <button
                                       key={s.name}
                                       onClick={() => setService(i)}
@@ -386,7 +431,7 @@ export function Booking() {
                                   {t.booking.doctorLabel}
                                 </p>
                                 <div className="no-scrollbar mt-3.5 flex w-full min-w-0 gap-2.5 overflow-x-auto overscroll-x-contain pb-1 sm:flex-wrap">
-                                  {[-1, ...t.doctors.items.map((_, i) => i)].map((id) => (
+                                  {[-1, ...doctors.map((_, i) => i)].map((id) => (
                                     <button
                                       key={id}
                                       onClick={() => setDoctorId(id)}
@@ -399,7 +444,7 @@ export function Booking() {
                                     >
                                       {id === -1
                                         ? t.booking.anyDoctor
-                                        : t.doctors.items[id].name.replace("Dr. ", "").replace("Д-р ", "")}
+                                        : doctors[id]?.name.replace("Dr. ", "").replace("Д-р ", "")}
                                     </button>
                                   ))}
                                 </div>
@@ -484,13 +529,13 @@ export function Booking() {
                               </div>
                               <div className="flex flex-wrap gap-2 text-[11.5px] text-white/65">
                                 <span className="rounded-full border border-white/12 px-3 py-1.5">
-                                  🦷 {t.services.items[service ?? 0].name}
+                                  🦷 {services[service ?? 0].name}
                                 </span>
                                 <span className="rounded-full border border-white/12 px-3 py-1.5">
-                                  ⏱ {t.services.items[service ?? 0].duration}
+                                  ⏱ {services[service ?? 0].duration}
                                 </span>
                                 <span className="rounded-full border border-white/12 px-3 py-1.5">
-                                  💎 {t.services.items[service ?? 0].price}
+                                  💎 {services[service ?? 0].price}
                                 </span>
                               </div>
                             </motion.div>

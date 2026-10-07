@@ -1,14 +1,16 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
 import { useI18n } from "@/i18n";
+import { useHomeContent } from "@/lib/home-content";
 import { MEDIA } from "@/media";
 import { Counter, Icon, LuxButton, Reveal, SectionHead, ease } from "@/components/ui";
 
 /* ------------------------------------------------------------------ services */
 export function Services({ onBook }: { onBook: () => void }) {
   const { t } = useI18n();
+  const { services } = useHomeContent();
   const [open, setOpen] = useState<number | null>(null);
-  const active = open === null ? null : t.services.items[open];
+  const active = open === null ? null : services[open];
 
   return (
     <section
@@ -23,7 +25,7 @@ export function Services({ onBook }: { onBook: () => void }) {
         <SectionHead kicker={t.services.kicker} title={t.services.title} sub={t.services.sub} />
 
         <div className="mt-10 grid gap-4 sm:mt-14 sm:grid-cols-2 sm:gap-5 lg:grid-cols-4">
-          {t.services.items.map((s, i) => (
+          {services.map((s, i) => (
             <Reveal key={s.name} delay={(i % 4) * 0.07}>
               <motion.button
                 onClick={() => setOpen(i)}
