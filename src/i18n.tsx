@@ -172,7 +172,7 @@ const uz = {
   doctors: {
     kicker: "Uchrashing",
     title: "Xalqaro sertifikatga ega shifokorlar",
-    sub: "Har bir shifokor yiliga kamida 3 ta xalqaro treningda qatnashadi va o'z yo'nalishida mutaxassis. Kechki va tungi smenalar ham qo'llab-quvvatlanadi.",
+    sub: "Har bir shifokor yiliga kamida 3 ta xalqaro treningda qatnashadi va o'z yo'nalishida mutaxassis.",
     bookWith: "Shu shifokorga yozilish",
     expLabel: "yil tajriba",
     items: [
@@ -190,9 +190,9 @@ const uz = {
       },
       {
         name: "Dr. Timur Raximov",
-        role: "Terapevt · Endodont · Tungi smena",
+        role: "Terapevt · Endodont",
         exp: "10",
-        tags: ["Mikroskop I-darajali", "Shoshilinch yordam", "Zoom 4 sertifikati"],
+        tags: ["Mikroskop I-darajali", "Qulay davolash", "Zoom 4 sertifikati"],
       },
     ],
   },
@@ -224,7 +224,7 @@ const uz = {
       {
         name: "Jasur Tursunov",
         city: "Chirchiq",
-        treatment: "Tungi shoshilinch yordam",
+        treatment: "Qulay konsultatsiya",
         text: "Klinikadagi zamonaviy yondashuv menga yoqdi — hammasini tushuntirishdi, davolash rejasini ko'rsatishdi va og'riqni umuman sezmadim.",
       },
       {
@@ -302,7 +302,7 @@ const uz = {
   booking: {
     kicker: "Onlayn navbat",
     title: "3 qadamda navbatingizni band qiling",
-    sub: "Administrator 15 daqiqa ichida qo'ng'iroq qilib, vaqtni tasdiqlaydi. Navbat bepul va majburiyatsiz — kechki va tungi vaqtlar ham mavjud.",
+    sub: "Administrator 15 daqiqa ichida qo'ng'iroq qilib, sizga mos tashrif vaqtini tasdiqlaydi. Navbat bepul va majburiyatsiz.",
     steps: ["Xizmat", "Sana va vaqt", "Ma'lumotlar"],
     serviceLabel: "Qaysi xizmat kerak?",
     doctorLabel: "Shifokor",
@@ -535,13 +535,13 @@ const ru: Dict = {
   doctors: {
     kicker: "Знакомство",
     title: "Врачи с международными сертификатами",
-    sub: "Каждый врач ежегодно проходит минимум 3 международных тренинга и является специалистом в своём направлении. Есть вечерние и ночные смены.",
+    sub: "Каждый врач ежегодно проходит минимум 3 международных тренинга и является специалистом в своём направлении.",
     bookWith: "Записаться к врачу",
     expLabel: "лет опыта",
     items: [
       { name: "Д-р Сардор Юсупов", role: "Главный врач · Имплантолог, PhD", exp: "18", tags: ["Сертификат Nobel Biocare", "1 500+ имплантов", "Преподаватель кафедры"] },
       { name: "Д-р Нигора Каримова", role: "Ортодонт · Эстетическая стоматология", exp: "12", tags: ["Invisalign provider", "Мастер виниров", "Брекеты Damon"] },
-      { name: "Д-р Тимур Рахимов", role: "Терапевт · Эндодонтист · Ночная смена", exp: "10", tags: ["Микроскоп 1-й категории", "Срочная помощь", "Сертификат Zoom 4"] },
+      { name: "Д-р Тимур Рахимов", role: "Терапевт · Эндодонтист", exp: "10", tags: ["Микроскоп 1-й категории", "Комфортное лечение", "Сертификат Zoom 4"] },
     ],
   },
   results: {
@@ -564,7 +564,7 @@ const ru: Dict = {
     verified: "Проверенный пациент",
     items: [
       { name: "Дилноза Рахимова", city: "Ташкент", treatment: "Hollywood Smile", text: "Годами стеснялась фотографироваться. В AZAMAT DENTAL за 2 дня сделали такую улыбку, что теперь улыбаюсь на каждом фото. Уровень сервиса — европейский!" },
-      { name: "Жасур Турсунов", city: "Чирчик", treatment: "Ночная срочная помощь", text: "Понравился современный подход клиники — всё объяснили, показали план лечения, и процедура прошла комфортно." },
+      { name: "Жасур Турсунов", city: "Чирчик", treatment: "Комфортная консультация", text: "Понравился современный подход клиники — всё объяснили, показали план лечения, и процедура прошла комфортно." },
       { name: "Камола Алиева", city: "Ташкент", treatment: "Элайнеры", text: "Зубы выровнялись за год, никто даже не заметил элайнеры. Каждый месяц сами звонили и приглашали на контроль." },
       { name: "Сергей Петров", city: "Самарканд", treatment: "Отбеливание + гигиена", text: "Сервис на русском языке — для меня это было очень удобно. Результат виден сразу и держится уже второй год." },
     ],
@@ -598,7 +598,7 @@ const ru: Dict = {
   booking: {
     kicker: "Онлайн-запись",
     title: "Забронируйте визит в 3 шага",
-    sub: "Администратор перезвонит в течение 15 минут и подтвердит время. Запись бесплатная и ни к чему не обязывает — есть вечерние и ночные окна.",
+    sub: "Администратор перезвонит в течение 15 минут и подтвердит удобное время. Запись бесплатная и ни к чему не обязывает.",
     steps: ["Услуга", "Дата и время", "Данные"],
     serviceLabel: "Какая услуга нужна?",
     doctorLabel: "Врач",
@@ -715,7 +715,7 @@ const en: Dict = {
   services: {
     kicker: "Services",
     title: "A complete solution for every case",
-    sub: "From diagnostics to aesthetic restoration and implantation — one clinic, one team, one warranty. An on-duty doctor is available at night too.",
+    sub: "From diagnostics to aesthetic restoration and implantation — one clinic, one team, one warranty. Our team will help you choose a clear treatment plan.",
     items: [
       { icon: "implant", name: "Implantology", desc: "Nobel Biocare and Straumann implants. A new tooth in one day, painless and lifelong.", price: "from 6,900,000 UZS", tag: "Bestseller", duration: "30–40 min · 1–3 visits", long: "The implant is placed according to a 3D plan: the surgery takes about 30 minutes and is completely painless thanks to computer anaesthesia." },
       { icon: "veneer", name: "Hollywood Smile", desc: "Veneers and luminous technology — a flawless smile in 2 days.", price: "from 12,000,000 UZS", tag: "VIP", duration: "2 days", long: "Digital Smile Design: you first see your new smile in a digital mock-up, then the veneers are bonded with lab precision." },
@@ -766,13 +766,13 @@ const en: Dict = {
   doctors: {
     kicker: "Meet the team",
     title: "Internationally certified doctors",
-    sub: "Each doctor attends at least three international trainings a year and is a specialist in their field. Evening and night shifts available.",
+    sub: "Each doctor attends at least three international trainings a year and is a specialist in their field.",
     bookWith: "Book with this doctor",
     expLabel: "yrs experience",
     items: [
       { name: "Dr. Sardor Yusupov", role: "Chief doctor · Implantologist, PhD", exp: "18", tags: ["Nobel Biocare certified", "1 500+ implants", "University lecturer"] },
       { name: "Dr. Nigora Karimova", role: "Orthodontist · Aesthetic dentistry", exp: "12", tags: ["Invisalign provider", "Veneer master", "Damon braces"] },
-      { name: "Dr. Timur Rakhimov", role: "Therapist · Endodontist · Night shift", exp: "10", tags: ["Microscope level 1", "Emergency care", "Zoom 4 certified"] },
+      { name: "Dr. Timur Rakhimov", role: "Therapist · Endodontist", exp: "10", tags: ["Microscope level 1", "Comfort-focused care", "Zoom 4 certified"] },
     ],
   },
   results: {
@@ -795,7 +795,7 @@ const en: Dict = {
     verified: "Verified patient",
     items: [
       { name: "Dilnoza Rahimova", city: "Tashkent", treatment: "Hollywood Smile", text: "For years I hated being photographed. AZAMAT DENTAL gave me a smile in 2 days — now I smile in every photo. The service level is European!" },
-      { name: "Jasur Tursunov", city: "Chirchiq", treatment: "Night emergency care", text: "I liked the clinic's modern approach — they explained everything, showed me the treatment plan and made the visit comfortable." },
+      { name: "Jasur Tursunov", city: "Chirchiq", treatment: "Comfortable consultation", text: "I liked the clinic's modern approach — they explained everything, showed me the treatment plan and made the visit comfortable." },
       { name: "Kamola Aliyeva", city: "Tashkent", treatment: "Aligners", text: "My teeth straightened in a year and nobody even noticed the aligners. They called me for a check-up every single month." },
       { name: "Sergey Petrov", city: "Samarkand", treatment: "Whitening + hygiene", text: "They served me in Russian, which was very convenient. The result was visible immediately and has lasted two years." },
     ],
@@ -829,7 +829,7 @@ const en: Dict = {
   booking: {
     kicker: "Online booking",
     title: "Book your visit in 3 steps",
-    sub: "Our coordinator will call you back within 15 minutes to confirm the time. Booking is free with no obligation — evening and night slots included.",
+    sub: "Our coordinator will call you back within 15 minutes to confirm a convenient time. Booking is free with no obligation.",
     steps: ["Service", "Date & time", "Your details"],
     serviceLabel: "Which service do you need?",
     doctorLabel: "Doctor",
