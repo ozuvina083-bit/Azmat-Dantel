@@ -167,6 +167,7 @@ export function Booking() {
     ? encodeURIComponent(
         [
           `STOMATOLOGIYA AZAMAT DENTAL · ${t.booking.refLabel}: ${record.ref}`,
+          `Telefon klinikasi: ${MEDIA.phone}`,
           `${t.booking.summaryLabels.service}: ${record.service}`,
           `${t.booking.summaryLabels.doctor}: ${record.doctor}`,
           `${t.booking.summaryLabels.time}: ${record.date} ${record.time}`,

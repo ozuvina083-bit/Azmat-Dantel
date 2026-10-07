@@ -11,7 +11,7 @@ export const DEMO = {
   toastMs: 9000,
   /** Shown in the demo sheet so the client can reply straight away. */
   contact: {
-    telegram: "https://t.me/", // ← put your Telegram username here
+    telegram: "https://t.me/share/url?url=https%3A%2F%2Fmaps.app.goo.gl%2FVtir8RowgiwUByuv6&text=Stomatologiya%20Azamat%20Dental%20%7C%20%2B998%2091%20924%2006%2054",
     whatsapp: "", // ← optional: https://wa.me/998XXXXXXXXX
   },
   copy: {
