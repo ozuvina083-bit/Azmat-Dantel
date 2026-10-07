@@ -7,7 +7,7 @@ const px = (id: number, w = 1200, h = 800) =>
 export const BRAND = {
   name: "Stomatologiya Azamat Dental",
   short: "AZAMAT DENTAL",
-  sub: "STOMATOLOGIYA · 24/7",
+  sub: "STOMATOLOGIYA · PREMIUM",
   handle: "@azamatdental",
 };
 

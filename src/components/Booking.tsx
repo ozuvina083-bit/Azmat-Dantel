@@ -11,7 +11,7 @@ const WEEKDAYS: Record<Lang, string[]> = {
   en: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
 };
 
-/** 24/7 clinic → daytime, evening and night slots */
+/** Flexible clinic appointments across daytime and evening slots */
 const SLOTS = ["09:00", "10:30", "12:00", "13:30", "15:00", "16:30", "18:00", "19:30", "21:00", "23:00"];
 
 /** Deterministic per-day availability instead of hard-coded "busy" slots. */

@@ -26,7 +26,7 @@ export const DEMO = {
         "Oldin/Keyin natijalar slayderi (barmoq bilan tortiladi)",
         "3 qadamli onlayn navbat: xizmat → sana/vaqt → aloqa",
         "Shifokorlar, mijozlar fikri va klinika galereyasi",
-        "24/7 bloklari, xarita havolasi va mobil uchun to'liq moslashgan dizayn",
+        "Aloqa, xarita havolasi va mobil uchun to'liq moslashgan dizayn",
       ],
       productionTitle: "Ishga tushirishdan oldin almashtiriladi",
       production: [
@@ -60,7 +60,7 @@ export const DEMO = {
         "Слайдер результатов «до/после» (тянется пальцем)",
         "Онлайн-запись в 3 шага: услуга → дата/время → контакты",
         "Врачи, отзывы пациентов и галерея клиники",
-        "Блоки 24/7, ссылка на карту и полностью адаптивный мобильный дизайн",
+        "Контакты, ссылка на карту и полностью адаптивный мобильный дизайн",
       ],
       productionTitle: "Заменяется перед запуском",
       production: [
@@ -94,7 +94,7 @@ export const DEMO = {
         "Before/after results slider (drag with your finger)",
         "3-step online booking: service → date/time → contact",
         "Doctors, patient reviews and clinic gallery",
-        "24/7 blocks, map link and a fully responsive mobile design",
+        "Contact details, map link and a fully responsive mobile design",
       ],
       productionTitle: "Replaced before launch",
       production: [

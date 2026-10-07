@@ -28,9 +28,6 @@ export function Wordmark({ onDark = true }: { onDark?: boolean }) {
       </span>
       <span className="mt-0.5 flex items-center gap-1.5">
         <span className="text-[0.55rem] font-semibold uppercase tracking-[0.34em] text-mint">Dental</span>
-        <span className="rounded-full border border-mint/40 px-1.5 py-[1px] text-[0.5rem] font-bold tracking-[0.12em] text-mint">
-          24/7
-        </span>
       </span>
     </span>
   );
@@ -95,7 +92,7 @@ export function Preloader({ onDone }: { onDone: () => void }) {
         />
       </div>
       <p className="relative mt-4 text-[11px] uppercase tracking-[0.34em] text-white/40">
-        G'ijduvon · Buxoro · 24/7 · {Math.round(progress)}%
+        G'ijduvon · Buxoro · {Math.round(progress)}%
       </p>
     </motion.div>
   );

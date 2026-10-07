@@ -48,13 +48,13 @@ function HeroVisual({ compact = false }: { compact?: boolean }) {
             <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-mint/25 to-transparent scanline" />
           )}
 
-          {/* 24/7 badge on the photo */}
+          {/* Premium care badge on the photo */}
           <span className="absolute right-2.5 top-2.5 flex items-center gap-2 rounded-full border border-mint/40 bg-ink/75 px-3 py-1.5 backdrop-blur-xl sm:right-3 sm:top-3 sm:px-3.5">
             <span className="relative flex h-2 w-2">
               <span className="absolute h-2 w-2 rounded-full bg-mint pulse-ring" />
               <span className="h-2 w-2 rounded-full bg-mint" />
             </span>
-            <span className="text-[11px] font-bold tracking-[0.18em] text-mint">24/7</span>
+            <span className="text-[11px] font-bold tracking-[0.18em] text-mint">PREMIUM</span>
           </span>
 
           {compact ? (
