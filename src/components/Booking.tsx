@@ -163,20 +163,6 @@ export function Booking() {
     setError("");
   };
 
-  const telegramText = record
-    ? encodeURIComponent(
-        [
-          `STOMATOLOGIYA AZAMAT DENTAL · ${t.booking.refLabel}: ${record.ref}`,
-          `Telefon klinikasi: ${MEDIA.phone}`,
-          `${t.booking.summaryLabels.service}: ${record.service}`,
-          `${t.booking.summaryLabels.doctor}: ${record.doctor}`,
-          `${t.booking.summaryLabels.time}: ${record.date} ${record.time}`,
-          `${t.booking.summaryLabels.name}: ${record.name}`,
-          `${t.booking.summaryLabels.phone}: ${record.phone}`,
-        ].join("\n")
-      )
-    : "";
-
   const summary = [
     { l: t.booking.summaryLabels.service, v: service === null ? "—" : t.services.items[service].name },
     { l: t.booking.summaryLabels.doctor, v: doctorName },
@@ -278,10 +264,7 @@ export function Booking() {
                       </div>
 
                       <div className="mt-6 flex w-full max-w-md flex-col justify-center gap-2.5 sm:mt-7 sm:flex-row sm:gap-3">
-                        <LuxButton
-                          href={`https://t.me/share/url?url=${encodeURIComponent(MEDIA.maps)}&text=${telegramText}`}
-                          className="w-full px-5 py-3.5 text-[13px] sm:w-auto"
-                        >
+                        <LuxButton href={MEDIA.telegram} className="w-full px-5 py-3.5 text-[13px] sm:w-auto">
                           {t.booking.telegramCta}
                         </LuxButton>
                         <LuxButton variant="ghost" className="w-full px-5 py-3.5 text-[13px] sm:w-auto" onClick={reset}>

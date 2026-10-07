@@ -27,7 +27,7 @@ export const MEDIA = {
   avatars: [px(3762453, 200, 200), px(3845551, 200, 200), px(3762400, 200, 200), px(5355860, 200, 200)],
   phone: "+998 91 924 06 54",
   phoneHref: "tel:+998919240654",
-  telegram: "https://t.me/share/url?url=https%3A%2F%2Fmaps.app.goo.gl%2FVtir8RowgiwUByuv6&text=Stomatologiya%20Azamat%20Dental%20%7C%20%2B998%2091%20924%2006%2054",
+  telegram: "https://t.me/+998919240654",
   instagram: "https://instagram.com/estheticwhitedental",
   maps: "https://maps.app.goo.gl/Vtir8RowgiwUByuv6",
 };
