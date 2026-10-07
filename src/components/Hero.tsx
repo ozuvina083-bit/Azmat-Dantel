@@ -33,7 +33,7 @@ function HeroVisual({ compact = false }: { compact?: boolean }) {
         <div className={cn("relative overflow-hidden rounded-[2rem]", compact && "rounded-[1.25rem]")}>
           <img
             src={MEDIA.hero}
-            alt="ESTHETIC WHITE DENTAL klinikasi"
+            alt="Stomatologiya Azamat Dental klinikasi"
             width={1100}
             height={1300}
             decoding="async"

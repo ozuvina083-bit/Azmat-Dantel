@@ -166,7 +166,7 @@ export function Booking() {
   const telegramText = record
     ? encodeURIComponent(
         [
-          `ESTHETIC WHITE DENTAL · ${t.booking.refLabel}: ${record.ref}`,
+          `STOMATOLOGIYA AZAMAT DENTAL · ${t.booking.refLabel}: ${record.ref}`,
           `${t.booking.summaryLabels.service}: ${record.service}`,
           `${t.booking.summaryLabels.doctor}: ${record.doctor}`,
           `${t.booking.summaryLabels.time}: ${record.date} ${record.time}`,
@@ -657,7 +657,7 @@ export function Booking() {
               <div className="relative hidden overflow-hidden rounded-[1.6rem] border border-white/10 sm:block sm:flex-1 sm:rounded-[2rem]">
                 <img
                   src={MEDIA.heroAlt}
-                  alt="ESTHETIC WHITE DENTAL clinic"
+                  alt="STOMATOLOGIYA AZAMAT DENTAL clinic"
                   width={1000}
                   height={1200}
                   loading="lazy"

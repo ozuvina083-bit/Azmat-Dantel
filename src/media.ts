@@ -5,10 +5,10 @@ const px = (id: number, w = 1200, h = 800) =>
   `https://images.pexels.com/photos/${id}/pexels-photo-${id}.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=${w}&h=${h}`;
 
 export const BRAND = {
-  name: "ESTHETIC WHITE DENTAL",
-  short: "ESTHETIC WHITE",
-  sub: "DENTAL · 24/7",
-  handle: "@estheticwhitedental",
+  name: "Stomatologiya Azamat Dental",
+  short: "AZAMAT DENTAL",
+  sub: "STOMATOLOGIYA · 24/7",
+  handle: "@azamatdental",
 };
 
 export const MEDIA = {
@@ -25,11 +25,11 @@ export const MEDIA = {
   caseC: { before: px(3881155, 900, 700), after: px(3762400, 900, 700) },
   gallery: [px(3762453, 900, 700), px(6627574, 900, 700), px(6627571, 900, 700), px(8260438, 900, 700)],
   avatars: [px(3762453, 200, 200), px(3845551, 200, 200), px(3762400, 200, 200), px(5355860, 200, 200)],
-  phone: "+998 71 200 30 40",
-  phoneHref: "tel:+998712003040",
+  phone: "+998 91 924 06 54",
+  phoneHref: "tel:+998919240654",
   telegram: "https://t.me/estheticwhitedental",
   instagram: "https://instagram.com/estheticwhitedental",
-  maps: "https://maps.app.goo.gl/V2hFNEiiZMY2pDQJA",
+  maps: "https://maps.app.goo.gl/Vtir8RowgiwUByuv6",
 };
 
 export const BRANDS = [

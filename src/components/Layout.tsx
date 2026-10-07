@@ -4,28 +4,13 @@ import { LANGS, useI18n, type Lang } from "@/i18n";
 import { BRAND, MEDIA } from "@/media";
 import { Icon, LuxButton, Reveal, ease } from "@/components/ui";
 import { cn } from "@/utils/cn";
+import logo from "@/assets/azamat-dental-logo.png";
 
 /* ------------------------------------------------------------------ logo */
 export function ToothMark({ className = "h-9 w-9" }: { className?: string }) {
   return (
-    <span className={cn("relative inline-flex items-center justify-center", className)}>
-      <span className="absolute inset-0 rounded-2xl bg-gradient-to-br from-mint via-[#38e0e0] to-azure opacity-90 blur-[10px]" />
-      <span className="relative inline-flex h-full w-full items-center justify-center rounded-2xl border border-white/20 bg-ink/80">
-        <svg viewBox="0 0 24 24" fill="none" className="h-[58%] w-[58%]">
-          <defs>
-            <linearGradient id="toothg" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0%" stopColor="#8ff5e4" />
-              <stop offset="100%" stopColor="#e9c68b" />
-            </linearGradient>
-          </defs>
-          <path
-            d="M12 3.3C9.4 3.3 8.1 5 7 5c-1.6 0-3 1.4-3 3.4 0 2.6 1 4 1.5 7.3.3 2.4.5 5.3 2 5.3 1.7 0 1.7-3.6 2.4-5.8.3-1 .7-1 1 0 .7 2.2.7 5.8 2.4 5.8 1.5 0 1.7-2.9 2-5.3C17 12.4 18 11 18 8.4 18 6.4 16.6 5 15 5c-1.1 0-2.4-1.7-3-1.7Z"
-            stroke="url(#toothg)"
-            strokeWidth={1.4}
-            strokeLinecap="round"
-          />
-        </svg>
-      </span>
+    <span className={cn("relative inline-flex items-center justify-center overflow-hidden rounded-2xl bg-white", className)}>
+      <img src={logo} alt="Stomatologiya Azamat Dental logo" className="h-full w-full object-contain" />
     </span>
   );
 }
@@ -110,7 +95,7 @@ export function Preloader({ onDone }: { onDone: () => void }) {
         />
       </div>
       <p className="relative mt-4 text-[11px] uppercase tracking-[0.34em] text-white/40">
-        Tashkent · Qorasuv · 24/7 · {Math.round(progress)}%
+        G'ijduvon · Buxoro · 24/7 · {Math.round(progress)}%
       </p>
     </motion.div>
   );
@@ -357,7 +342,7 @@ export function Nav({ onBook }: { onBook: () => void }) {
                   {t.ui.book}
                 </LuxButton>
                 <p className="text-center text-[12px] font-semibold text-white/60">
-                  {MEDIA.phone} · {lang === "ru" ? "Карасу 3-й массив, 2" : lang === "en" ? "Qorasuv 3rd massif, 2" : "Qorasuv 3-mavze, 2"}
+                  {MEDIA.phone} · {lang === "ru" ? "Qumrabotsaroy 3, Gijduvon" : lang === "en" ? "Qumrabotsaroy 3, Gijduvon" : "Qumrabotsaroy 3, Gijduvon"}
                 </p>
               </div>
             </motion.div>

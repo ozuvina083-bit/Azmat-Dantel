@@ -39,7 +39,7 @@ export function DemoBar() {
     const url = window.location.href;
     try {
       if (navigator.share) {
-        await navigator.share({ title: "ESTHETIC WHITE DENTAL — demo", url });
+        await navigator.share({ title: "STOMATOLOGIYA AZAMAT DENTAL — demo", url });
         return;
       }
       await navigator.clipboard.writeText(url);

@@ -319,8 +319,8 @@ export function Contact({ onBook }: { onBook: () => void }) {
                   <Icon name="clock" className="h-3.5 w-3.5" />
                   {t.ui.open247}
                 </p>
-                <p className="mt-1 text-[10.5px] text-white/50 sm:text-[11px]">Qorasuv 3 · 41.21°N</p>
-                <p className="text-[10.5px] text-white/50 sm:text-[11px]">69.21°E · Tashkent</p>
+                <p className="mt-1 text-[10.5px] text-white/50 sm:text-[11px]">Qumrabotsaroy 3 · 40.15°N</p>
+                <p className="text-[10.5px] text-white/50 sm:text-[11px]">64.80°E · Gijduvon</p>
               </div>
             </div>
           </Reveal>
