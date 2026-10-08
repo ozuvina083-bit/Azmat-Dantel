@@ -636,7 +636,10 @@ export function Footer({ onBook }: { onBook: () => void }) {
         <div className="mt-12 flex flex-col gap-2.5 border-t border-white/10 py-7 text-[12px] leading-relaxed text-white/60 sm:mt-16 sm:text-xs md:flex-row md:items-center md:justify-between md:gap-3">
           <p>{t.footer.rights}</p>
           <p className="text-gold/60">{t.ui.demo}</p>
-          <p>{t.footer.licenses}</p>
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+            <p>{t.footer.licenses}</p>
+            <a href="/admin" className="text-white/45 transition hover:text-mint">{t.footer.adminLogin}</a>
+          </div>
         </div>
       </div>
     </footer>
