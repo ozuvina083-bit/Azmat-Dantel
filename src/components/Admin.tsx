@@ -32,11 +32,19 @@ export function Admin() {
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [notice, setNotice] = useState("");
   const [search, setSearch] = useState("");
+  const [recoveryMode, setRecoveryMode] = useState(false);
+  const [recoveryNotice, setRecoveryNotice] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
   useEffect(() => {
     if (!supabase) return;
+    if (window.location.hash.includes("type=recovery") || new URLSearchParams(window.location.search).get("type") === "recovery") setRecoveryMode(true);
     supabase.auth.getSession().then(({ data }) => setSession(data.session));
-    const { data } = supabase.auth.onAuthStateChange((_event, next) => setSession(next));
+    const { data } = supabase.auth.onAuthStateChange((event, next) => {
+      setSession(next);
+      if (event === "PASSWORD_RECOVERY") setRecoveryMode(true);
+    });
     return () => data.subscription.unsubscribe();
   }, []);
 
@@ -76,6 +84,29 @@ export function Admin() {
     setBusy(true); setLoginError("");
     const { error } = await supabase.auth.signInWithPassword({ email, password });
     if (error) setLoginError(error.message);
+    setBusy(false);
+  };
+
+  const requestPasswordReset = async () => {
+    if (!supabase) return;
+    if (!email.trim()) { setRecoveryNotice("Avval email manzilini kiriting."); return; }
+    setBusy(true); setRecoveryNotice("");
+    const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), {
+      redirectTo: `${window.location.origin}/admin`,
+    });
+    setRecoveryNotice(error ? `Email yuborilmadi: ${error.message}` : "Parolni tiklash havolasi emailingizga yuborildi.");
+    setBusy(false);
+  };
+
+  const saveNewPassword = async (event: FormEvent) => {
+    event.preventDefault();
+    if (!supabase) return;
+    if (newPassword.length < 8) { setRecoveryNotice("Parol kamida 8 ta belgidan iborat bo‘lsin."); return; }
+    if (newPassword !== confirmPassword) { setRecoveryNotice("Parollar bir-biriga mos kelmadi."); return; }
+    setBusy(true); setRecoveryNotice("");
+    const { error } = await supabase.auth.updateUser({ password: newPassword });
+    setRecoveryNotice(error ? `Parol yangilanmadi: ${error.message}` : "Parol yangilandi. Admin panel yuklanmoqda…");
+    if (!error) setRecoveryMode(false);
     setBusy(false);
   };
 
@@ -127,7 +158,8 @@ export function Admin() {
   const filtered = appointments.filter((a) => `${a.patient_name} ${a.phone} ${a.reference} ${a.service}`.toLowerCase().includes(search.toLowerCase()));
 
   if (!supabase) return <SetupScreen />;
-  if (!session) return <LoginScreen email={email} setEmail={setEmail} password={password} setPassword={setPassword} busy={busy} error={loginError} onSubmit={signIn} />;
+  if (recoveryMode) return <PasswordRecoveryScreen password={newPassword} setPassword={setNewPassword} confirmPassword={confirmPassword} setConfirmPassword={setConfirmPassword} busy={busy} notice={recoveryNotice} onSubmit={saveNewPassword} />;
+  if (!session) return <LoginScreen email={email} setEmail={setEmail} password={password} setPassword={setPassword} busy={busy} error={loginError} recoveryNotice={recoveryNotice} onSubmit={signIn} onRequestReset={() => void requestPasswordReset()} />;
   if (adminAllowed === null) return <div className="flex min-h-screen items-center justify-center bg-[#07101d] text-sm text-white/60">Tekshirilmoqda…</div>;
   if (!adminAllowed) return <AccessDenied onSignOut={() => void supabase?.auth.signOut()} />;
 
@@ -161,4 +193,32 @@ function SaveButton({busy,onClick}:{busy:boolean;onClick:()=>void}) { return <bu
 function Empty({text}:{text:string}) { return <div className="rounded-2xl border border-dashed border-white/15 px-5 py-12 text-center text-sm text-white/45">{text}</div>; }
 function AccessDenied({onSignOut}:{onSignOut:()=>void}) { return <div className="flex min-h-screen items-center justify-center bg-[#07101d] px-4 text-white"><div className="max-w-md rounded-3xl border border-white/10 bg-white/[.04] p-8"><h1 className="font-display text-2xl">Kirishga ruxsat yo‘q</h1><p className="mt-3 text-sm leading-6 text-white/60">Ushbu hisob <code className="text-mint">admin_users</code> ro‘yxatiga qo‘shilmagan. Supabase loyiha egasiga murojaat qiling.</p><button onClick={onSignOut} className="mt-5 rounded-xl border border-white/15 px-4 py-2.5 text-sm">Chiqish</button></div></div>; }
 function SetupScreen() { return <div className="flex min-h-screen items-center justify-center bg-[#07101d] px-4 text-white"><div className="max-w-xl rounded-3xl border border-white/10 bg-white/[.04] p-7 sm:p-10"><a href="/" className="text-sm text-mint">← Saytga qaytish</a><p className="mt-7 text-xs uppercase tracking-[.2em] text-mint">Admin · Supabase</p><h1 className="mt-3 font-display text-3xl">Sozlash kerak</h1><p className="mt-4 text-sm leading-6 text-white/65">{getSupabaseSetupMessage()}</p><ol className="mt-5 list-decimal space-y-2 pl-5 text-sm leading-6 text-white/65"><li>Supabase’da loyiha yarating va loyiha URL’i hamda public anon key’i oling.</li><li>Faylni <code className="text-mint">.env.example</code> dan <code className="text-mint">.env.local</code> ga ko‘chiring va qiymatlarni kiriting.</li><li><code className="text-mint">supabase/migrations/202610070001_initial_schema.sql</code> migratsiyasini ishga tushiring.</li><li>Supabase Authentication’da admin foydalanuvchisini yarating, keyin dashboard’ga kiring: <code className="text-mint">/admin</code>.</li></ol></div></div>; }
-function LoginScreen({email,setEmail,password,setPassword,busy,error,onSubmit}:{email:string;setEmail:(v:string)=>void;password:string;setPassword:(v:string)=>void;busy:boolean;error:string;onSubmit:(e:FormEvent)=>void}) { return <div className="flex min-h-screen items-center justify-center bg-[#07101d] px-4 text-white"><form onSubmit={onSubmit} className="w-full max-w-md rounded-3xl border border-white/10 bg-white/[.04] p-7 sm:p-9"><a href="/" className="text-sm text-mint">← Saytga qaytish</a><p className="mt-7 text-xs uppercase tracking-[.2em] text-mint">AZAMAT DENTAL</p><h1 className="mt-3 font-display text-3xl">Admin kirish</h1><label className="mt-7 block text-sm text-white/65">Email<input type="email" autoComplete="username" required value={email} onChange={(e)=>setEmail(e.target.value)} className="mt-2 w-full rounded-xl border border-white/15 bg-[#07101d] px-4 py-3 text-white outline-none focus:border-mint/50"/></label><label className="mt-4 block text-sm text-white/65">Parol<input type="password" autoComplete="current-password" required value={password} onChange={(e)=>setPassword(e.target.value)} className="mt-2 w-full rounded-xl border border-white/15 bg-[#07101d] px-4 py-3 text-white outline-none focus:border-mint/50"/></label>{error&&<p className="mt-4 text-sm text-red-300">{error}</p>}<button disabled={busy} className="mt-6 w-full rounded-xl bg-gradient-to-r from-mint to-azure px-4 py-3 font-bold text-ink disabled:opacity-50">{busy?"Tekshirilmoqda…":"Kirish"}</button></form></div>; }
+function LoginScreen({email,setEmail,password,setPassword,busy,error,recoveryNotice,onSubmit,onRequestReset}:{email:string;setEmail:(v:string)=>void;password:string;setPassword:(v:string)=>void;busy:boolean;error:string;recoveryNotice:string;onSubmit:(e:FormEvent)=>void;onRequestReset:()=>void}) {
+  return <div className="flex min-h-screen items-center justify-center bg-[#07101d] px-4 text-white">
+    <form onSubmit={onSubmit} className="w-full max-w-md rounded-3xl border border-white/10 bg-white/[.04] p-7 sm:p-9">
+      <a href="/" className="text-sm text-mint">← Saytga qaytish</a>
+      <p className="mt-7 text-xs uppercase tracking-[.2em] text-mint">AZAMAT DENTAL</p>
+      <h1 className="mt-3 font-display text-3xl">Admin kirish</h1>
+      <label className="mt-7 block text-sm text-white/65">Email<input type="email" autoComplete="username" required value={email} onChange={(e)=>setEmail(e.target.value)} className="mt-2 w-full rounded-xl border border-white/15 bg-[#07101d] px-4 py-3 text-white outline-none focus:border-mint/50"/></label>
+      <label className="mt-4 block text-sm text-white/65">Parol<input type="password" autoComplete="current-password" required value={password} onChange={(e)=>setPassword(e.target.value)} className="mt-2 w-full rounded-xl border border-white/15 bg-[#07101d] px-4 py-3 text-white outline-none focus:border-mint/50"/></label>
+      {error&&<p className="mt-4 text-sm text-red-300">{error}</p>}
+      <button disabled={busy} className="mt-6 w-full rounded-xl bg-gradient-to-r from-mint to-azure px-4 py-3 font-bold text-ink disabled:opacity-50">{busy?"Tekshirilmoqda…":"Kirish"}</button>
+      <button type="button" disabled={busy} onClick={onRequestReset} className="mt-4 w-full rounded-xl border border-white/15 px-4 py-3 text-sm text-white/75 disabled:opacity-50">Parolni tiklash havolasini yuborish</button>
+      {recoveryNotice&&<p role="status" className="mt-4 text-sm text-mint">{recoveryNotice}</p>}
+    </form>
+  </div>;
+}
+
+function PasswordRecoveryScreen({password,setPassword,confirmPassword,setConfirmPassword,busy,notice,onSubmit}:{password:string;setPassword:(v:string)=>void;confirmPassword:string;setConfirmPassword:(v:string)=>void;busy:boolean;notice:string;onSubmit:(e:FormEvent)=>void}) {
+  return <div className="flex min-h-screen items-center justify-center bg-[#07101d] px-4 text-white">
+    <form onSubmit={onSubmit} className="w-full max-w-md rounded-3xl border border-white/10 bg-white/[.04] p-7 sm:p-9">
+      <p className="text-xs uppercase tracking-[.2em] text-mint">AZAMAT DENTAL</p>
+      <h1 className="mt-3 font-display text-3xl">Yangi parol o‘rnating</h1>
+      <p className="mt-3 text-sm leading-6 text-white/60">Tiklash havolasi tasdiqlandi. Yangi parol kamida 8 ta belgidan iborat bo‘lsin.</p>
+      <label className="mt-7 block text-sm text-white/65">Yangi parol<input type="password" autoComplete="new-password" minLength={8} required value={password} onChange={(e)=>setPassword(e.target.value)} className="mt-2 w-full rounded-xl border border-white/15 bg-[#07101d] px-4 py-3 text-white outline-none focus:border-mint/50"/></label>
+      <label className="mt-4 block text-sm text-white/65">Yangi parolni qayta kiriting<input type="password" autoComplete="new-password" minLength={8} required value={confirmPassword} onChange={(e)=>setConfirmPassword(e.target.value)} className="mt-2 w-full rounded-xl border border-white/15 bg-[#07101d] px-4 py-3 text-white outline-none focus:border-mint/50"/></label>
+      {notice&&<p role="status" className="mt-4 text-sm text-mint">{notice}</p>}
+      <button disabled={busy} className="mt-6 w-full rounded-xl bg-gradient-to-r from-mint to-azure px-4 py-3 font-bold text-ink disabled:opacity-50">{busy?"Saqlanmoqda…":"Yangi parolni saqlash"}</button>
+    </form>
+  </div>;
+}

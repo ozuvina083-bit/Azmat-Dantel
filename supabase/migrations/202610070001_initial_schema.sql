@@ -1,4 +1,4 @@
--- Azamat Dental dashboard: apply this migration in Supabase SQL Editor.
+-- Azamat Dental dashboard schema; least-privilege public booking and availability.
 create extension if not exists pgcrypto;
 
 create table if not exists public.site_content (
@@ -7,23 +7,12 @@ create table if not exists public.site_content (
   updated_at timestamptz not null default now(),
   updated_by uuid references auth.users(id)
 );
+create index if not exists site_content_updated_by_idx on public.site_content(updated_by);
 
 create table if not exists public.admin_users (
   user_id uuid primary key references auth.users(id) on delete cascade,
   created_at timestamptz not null default now()
 );
-
-create or replace function public.is_admin()
-returns boolean
-language sql
-stable
-security definer
-set search_path = public
-as $$
-  select exists (select 1 from public.admin_users where user_id = auth.uid());
-$$;
-revoke all on function public.is_admin() from public;
-grant execute on function public.is_admin() to authenticated;
 
 create table if not exists public.appointments (
   id uuid primary key default gen_random_uuid(),
@@ -56,30 +45,58 @@ alter table public.site_content enable row level security;
 alter table public.admin_users enable row level security;
 alter table public.appointments enable row level security;
 
--- Public site reads the public homepage content only. Writes require an authenticated admin.
+-- A signed-in user can check only their own admin membership. Admin membership is managed server-side.
+revoke all on public.admin_users from anon, authenticated;
+grant select on public.admin_users to authenticated;
+drop policy if exists "users can read own admin membership" on public.admin_users;
+create policy "users can read own admin membership" on public.admin_users
+  for select to authenticated using (user_id = (select auth.uid()));
+
+create or replace function public.is_admin()
+returns boolean
+language sql
+stable
+security invoker
+set search_path = public
+as $$
+  select exists (select 1 from public.admin_users where user_id = auth.uid());
+$$;
+revoke all on function public.is_admin() from public;
+revoke all on function public.is_admin() from anon;
+grant execute on function public.is_admin() to authenticated;
+
+-- Public visitors are anonymous; signed-in dashboard users are handled by the admin policy only.
 drop policy if exists "public can read homepage content" on public.site_content;
 create policy "public can read homepage content" on public.site_content
-  for select to anon, authenticated using (id like 'homepage_%');
+  for select to anon using (id like 'homepage_%');
 drop policy if exists "authenticated admins manage homepage content" on public.site_content;
 create policy "authenticated admins manage homepage content" on public.site_content
   for all to authenticated using (public.is_admin())
   with check (public.is_admin());
 
--- Public appointment creation and availability reads; only signed-in dashboard users can manage appointments.
+-- Patient records are never publicly readable. Anonymous users can submit bookings.
 drop policy if exists "public can submit appointments" on public.appointments;
 create policy "public can submit appointments" on public.appointments
-  for insert to anon, authenticated with check (status = 'pending' and telegram_chat_id is null and telegram_sent_at is null);
+  for insert to anon with check (status = 'pending' and telegram_chat_id is null and telegram_sent_at is null);
 drop policy if exists "public can read active appointment slots" on public.appointments;
+create policy "public can read active appointment slots" on public.appointments
+  for select to anon using (status in ('pending','confirmed'));
 drop policy if exists "authenticated admins manage appointments" on public.appointments;
 create policy "authenticated admins manage appointments" on public.appointments
   for all to authenticated using (public.is_admin())
   with check (public.is_admin());
 
--- Expose only occupied times; never expose patient name, phone, comment or booking reference publicly.
+-- Anonymous visitors may read only the slot columns, never patient or contact fields.
+revoke select on public.appointments from anon;
+grant select (appointment_date, appointment_time, status) on public.appointments to anon;
+grant select on public.appointments to authenticated;
+
+-- Safe availability RPC; SECURITY INVOKER respects the anonymous role's column grants and RLS policy.
 create or replace function public.get_booked_slots(p_date date)
 returns table(slot_time time)
 language sql
-security definer
+stable
+security invoker
 set search_path = public
 as $$
   select a.appointment_time
@@ -87,7 +104,8 @@ as $$
   where a.appointment_date = p_date and a.status in ('pending','confirmed');
 $$;
 revoke all on function public.get_booked_slots(date) from public;
-grant execute on function public.get_booked_slots(date) to anon, authenticated;
+revoke all on function public.get_booked_slots(date) from authenticated;
+grant execute on function public.get_booked_slots(date) to anon;
 
 -- Publicly display doctor portraits/certificates; restrict uploads and edits to allowlisted admins.
 insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
