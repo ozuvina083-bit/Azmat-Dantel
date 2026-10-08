@@ -9,6 +9,8 @@ import { Services, Tech, Why } from "@/components/Services";
 import { Doctors, Results, Testimonials } from "@/components/Doctors";
 import { Pricing, Contact } from "@/components/Pricing";
 import { Booking } from "@/components/Booking";
+import { Admin } from "@/components/Admin";
+import { HomeContentProvider } from "@/lib/home-content";
 
 function Shell() {
   const [loading, setLoading] = useState(() => {
@@ -76,9 +78,12 @@ function Shell() {
 }
 
 export default function App() {
+  if (window.location.pathname.startsWith("/admin")) return <Admin />;
   return (
     <LangProvider>
-      <Shell />
+      <HomeContentProvider>
+        <Shell />
+      </HomeContentProvider>
     </LangProvider>
   );
 }

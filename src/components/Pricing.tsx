@@ -4,11 +4,13 @@ import { useI18n } from "@/i18n";
 import { MEDIA } from "@/media";
 import { Icon, LuxButton, Reveal, SectionHead, ease } from "@/components/ui";
 import { cn } from "@/utils/cn";
+import { useHomeContent } from "@/lib/home-content";
 
 /* ------------------------------------------------------------------ pricing */
 
 export function Pricing({ onBook }: { onBook: () => void }) {
   const { t } = useI18n();
+  const { plans } = useHomeContent();
 
   return (
     <section
@@ -23,7 +25,7 @@ export function Pricing({ onBook }: { onBook: () => void }) {
 
 
         <div className="mt-9 grid gap-5 sm:mt-12 sm:grid-cols-2 sm:gap-6 lg:grid-cols-4">
-          {t.pricing.plans.map((p, i) => {
+          {plans.map((p, i) => {
             const featured = p.badge === "popular";
             return (
               <Reveal key={p.name} delay={i * 0.08}>
